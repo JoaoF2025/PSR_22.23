@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
-#NOT WORKING YET, REVIEW
-
 from collections import namedtuple
+
 
 Complex= namedtuple('Complex',['r','i'])
 
