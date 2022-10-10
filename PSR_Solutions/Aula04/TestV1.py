@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+#This is the test file for the first GROUP PROJECT
+
 import readchar
 import colorama
 import random
