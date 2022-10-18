@@ -2,7 +2,6 @@
 #Exercise 1
 #ACABAR DE BRINCAR
 
-from fcntl import F_SEAL_SEAL
 import cv2
 import argparse
 
