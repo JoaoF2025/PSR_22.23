@@ -20,7 +20,7 @@ def click_event(event, x, y, flags, params):
         draw= True
         
                    
-    elif draw  event==cv2.EVENT_MOUSEMOVE:
+    elif draw and event==cv2.EVENT_MOUSEMOVE:
         cv2.circle(background,(x,y),4,color,-1)
                       
     elif event==cv2.EVENT_LBUTTONUP:
