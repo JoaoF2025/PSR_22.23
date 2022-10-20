@@ -1,39 +1,33 @@
 #!/usr/bin/env python3
 #Exercise 1c
-#DESISTO, depois tento melhor.
 
 import cv2
+from functools import partial
 import numpy as np
+from colorama import Fore,init
 
-draw= False
-color = (0,0,255)
+init(autoreset=True)
+
 background=np.ones([400,600,3],dtype=np.uint8)
 background.fill(255)
 
-
-def click_event(event, x, y, flags, params):
-    
-    global draw      
-
-    # checking for left mouse clicks
+def click_event(event, x, y, flags, params, options):
+   
     if event == cv2.EVENT_LBUTTONDOWN: 
-        draw= True
-        
-                   
-    elif draw and event==cv2.EVENT_MOUSEMOVE:
-        cv2.circle(background,(x,y),4,color,-1)
-                      
+        options['draw']= True                  
+    elif options['draw'] and event==cv2.EVENT_MOUSEMOVE:
+        cv2.circle(background, (x,y), 4, options['color'], -2)                     
     elif event==cv2.EVENT_LBUTTONUP:
-        draw= False
-        cv2.circle(background,(x,y),4,color,-1)
-        
-
+        options['draw']=False
+        cv2.circle(background,(x,y),4,options['color'],-2)
+    
 def main():
 
-    global color
+    options={'draw':False,'color':(0,0,255)}
 
     cv2.namedWindow('Paint.py')
-    cv2.setMouseCallback('Paint.py', click_event)
+    cv2.setMouseCallback('Paint.py', partial(click_event, options=options))
+    print('You are now drawing in ' + Fore.RED + 'red')
 
     while True:
 
@@ -42,11 +36,18 @@ def main():
         k=cv2.waitKey(1) & 0xFF
 
         if k == ord('r'):
-            color=(0,0,255)
+            options['color']=(0,0,255)
+            print('You are now drawing in ' + Fore.RED + 'red')
         elif k == ord('g'):
-            color=(0,255,0)
+            options['color']=(0,255,0)
+            print('You are now drawing in '+ Fore.GREEN+'green')
         elif k == ord('b'):
-            color=(255,0,0)
+            options['color']=(255,0,0)
+            print('You are now drawing in '+Fore.BLUE+'blue')
+        elif k == ord('c'):
+            options['color']=(255,0,0)
+            background.fill(255)
+            print('Canvas cleared')
         elif k==27:
             cv2.destroyAllWindows()
             break
