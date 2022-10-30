@@ -19,7 +19,7 @@ import pprint
 from copy import deepcopy
 from collections import namedtuple
 import time
-from shapes import drawCircle
+import shapes
 
 #-----------
 # Global variables
@@ -195,7 +195,7 @@ def main():
 
         #* ---Drawing---
         drawingLine(src_img_gui,centroids,pencil_options)
-        
+         
         #-----------------------------
         # Visualization
         #-----------------------------
@@ -258,9 +258,14 @@ def main():
             file_name = "Drawing " + date +".png"
             print("Saving png image as " + file_name)
             cv2.imwrite(file_name , src_img_gui) #! Caso seja com o video pode ter de se mudar aqui
-
+        
         elif pressed_key == ord('o'):
-            drawCircle(src_img_gui,centroids,pencil_options)
+            shapes.drawCircle(src_img_gui,centroids,pencil_options)
+            print('Drawing a circle')
+        
+        elif pressed_key == ord('p'):
+            shapes.drawSquares(src_img_gui,centroids,pencil_options)
+            print('Drawing a rectangle')
 
         
 
