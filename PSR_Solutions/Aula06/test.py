@@ -2,46 +2,77 @@
 
 import cv2
 import numpy as np
+from pynput import keyboard
+from math import sqrt
+from functools import partial
 
-def keyboardEvents(switcher):
-    k=cv2.waitKey(1) & 0xFF
-    if k == 27:
-        cv2.destroyAllWindows()
-        exit()
-    elif k == ord('v'):
-        switcher['counter'] = not switcher['counter']
-        print(switcher)
+def mousePosition(event, x, y, flags, params, options, background):
+    if event == cv2.EVENT_MOUSEMOVE:         
+        options['x'],options['y']=x,y  
+        cv2.circle(background, (x,y), 3, options['color'], -1)
 
-
-def switchOutput(background, image_flip,switcher):
-   
-    mask = cv2.inRange(background,(0,0,0),(0,0,255))
-    mask = mask.astype(bool)
-
-    if switcher['counter']:
-        image_flip[mask] = background[mask]  #! joins the circle and the camera image
-
+"""""
+def keyListener():
     
-def main():
-    # initial setup
-    cam = cv2.VideoCapture(0)
+    def on_press(key):
+        if 'char' in dir(key) and key.char == 'p':
+            print('p pressed')
+        elif 'char' in dir(key) and key.char == 'o':
+            print('o pressed')
+        elif 'char' in dir(key) and key.char == 'e':
+            print('e pressed')
 
-    background=np.zeros((480,640,3),dtype=np.uint8)
+    def on_release(key):
+        if 'char' in dir(key) and key.char == 'p':
+            print('p released')
+        elif 'char' in dir(key) and key.char == 'o':
+            print('o released')
+        elif 'char' in dir(key) and key.char == 'e':
+            print('e released')
+
+    with keyboard.Listener(
+            on_press=on_press,
+            on_release=on_release) as listener:
+        listener.join()
+"""""
+
+
+def drawCircle(options,background):
+    circle_flip = options['circle_flip']
+
+    if circle_flip == 1:
+        options['ix'], options['iy'] = options['x'], options['y']
+        options['circle_flip'] = 2    
+    elif circle_flip == 3:
+        options['x1'], options['y1'] = options['x'], options['y']
+        background_copy = background.copy()
+        cv2.rectangle(background_copy, (options['ix'], options['iy']), (options['x1'], options['y1']), options['color'])
+        cv2.imshow('Canvas', background_copy)
+        circle_flip = 0
+
+def main():         
+
+    options={'color':(0,0,255), 'x':-1, 'y':-1, 'ix': -1, 'iy': -1, 'x1': -1, 'y1': -1, 'circle_flip': 0}
+
+    background=np.ones([400,600,3],dtype=np.uint8)
     background.fill(255)
 
-    switcher={'counter':False}
+    while(1):
 
-    while True:
+        cv2.namedWindow('Canvas')
+        cv2.setMouseCallback('Canvas', partial(mousePosition, options=options, background=background))
 
-        _, image = cam.read()  # get an image from the camera
-        image_flip=cv2.flip(image,1)
+        drawCircle(options,background)    
+        cv2.imshow('Canvas', background)
         
-        cv2.circle(background,(int(image.shape[0]/2),int(image.shape[1]/2)),90,(0,0,255),-2)
 
-        keyboardEvents(switcher)
-        switchOutput(background,image_flip,switcher)
+        k=cv2.waitKey(1) & 0xFF
 
-        cv2.imshow('Imagem', image_flip)
+        if k == 27:
+            cv2.destroyAllWindows
+            break
+        elif k == ord('a'):
+            options['circle_flip'] += 1
 
 if __name__ == '__main__':
     main()
