@@ -1,10 +1,13 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # --------------------------------------------------
 # Miguel Riem Oliveira.
 # PSR, September 2020.
 # Adapted from https://stackabuse.com/basic-socket-programming-in-python/
 # --------------------------------------------------
 import socket
+from re import I
+
+import dog_lib
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # create TCP/IP socket
 local_hostname = socket.gethostname()  # retrieve local hostname
@@ -32,6 +35,22 @@ while True:
             data = connection.recv(64)
             if data:
                 print ("Data: %s" % data) # output received data
+
+                # Deserialize or unmarshall
+                messages = data.split(',')
+
+                print(messages)
+                dog = dog_lib.Dog(name=messages[0], color=messages[3], age=messages[2], owner=messages[1])
+                # for idx in range(4, len(messages)):
+
+                for brother in messages[4:]:
+                    dog.addBrother(brother)
+
+                print(dog)
+
+
+
+
             else:
                 print ("no more data.") # no more data -- quit the loop
                 break
